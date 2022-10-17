@@ -9,96 +9,58 @@ function redirect(string $path)
 
 function get_categories(): array
 {
-    global $db;
-
-    $sql = "SELECT * FROM `categories`";
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
-    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    return $categories;
+    return select("categories");
 }
 
 function add_to_music(string $name, string $singer, int $category_id, string $detail, string $banner_file_name, string $music_file_name): bool|string
 {
-    global $db;
-
-    $sql = "INSERT INTO `music`(`music_name`, `singer`, `category_id`, `detail`, `music_file_name`, `banner_file_name`) 
-VALUES (:music_name, :singer, :category_id, :detail, :file_name, :banner_name)";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue("music_name", $name);
-    $stmt->bindValue("singer", $singer);
-    $stmt->bindValue("category_id", $category_id);
-    $stmt->bindValue("detail", $detail);
-    $stmt->bindValue("file_name", $banner_file_name);
-    $stmt->bindValue("banner_name", $music_file_name);
-    if ($stmt->execute()) {
+    if (insert("music", [
+        "music_name" => $name,
+        "singer" => $singer,
+        "category_id" => $category_id,
+        "detail" => $detail,
+        "music_file_name" => $music_file_name,
+        "banner_file_name" => $banner_file_name
+    ])) {
         return true;
     } else {
         return "خطا در اپلود فایل";
     }
+
 }
 
 function get_all_music(): array
 {
-    global $db;
-
-    $sql = "SELECT * FROM `music`";
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
-    $musics = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    return $musics;
+    return select("music");
 }
 
 function get_music_by_category_id(int $id): array
 {
-    global $db;
-
-    $sql = "SELECT * FROM `music` WHERE `Category_id`=:id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue("id", $id);
-    $stmt->execute();
-    $musics = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    return $musics;
+    return select("music", [], ["Category_id" => $id]);
 }
 
 function get_music_by_id(int $id): array
 {
-    global $db;
 
-    $sql = "SELECT * FROM `music` WHERE `id`=:id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue("id", $id);
-    $stmt->execute();
-    $music = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $music;
+    return select("music", [], ["id" => $id])[0];
 }
 
 
 function delete_music(int $id): void
 {
-    global $db;
-
-    $sql = "DELETE FROM `music` WHERE `id`=:id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue("id", $id);
-    $stmt->execute();
+    delete("music", ["id" => $id]);
 }
 
 function delete_category(int $id): void
 {
-    global $db;
-
-    $sql = "DELETE FROM `categories` WHERE `id`=:id";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue("id", $id);
-    $stmt->execute();
+    delete("categories", ["id" => $id]);
 }
 
 function edit_category(int $id, string $title): void
 {
-    global $db;
+    global $conn;
     $sql = "UPDATE `categories` SET `Category_title`=:title WHERE `id`=:id";
-    $stmt = $db->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->bindValue("title", $title);
     $stmt->bindValue("id", $id);
     $stmt->execute();
@@ -106,12 +68,7 @@ function edit_category(int $id, string $title): void
 
 function add_category(string $title): bool|string
 {
-    global $db;
-
-    $sql = "INSERT INTO `categories`(`Category_title`) VALUES (:title)";
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue("title", $title);
-    if ($stmt->execute()) {
+    if (insert("categories", ["Category_title" => $title])) {
         return true;
     } else {
         return "خطا دراضافه کردن دسته بندی";
@@ -125,7 +82,7 @@ function check_page(string $path): bool
 
 function update_music(int $status, int $id, string $name, string $singer, int $category_id, string $detail, string $banner_file_name = "1", string $music_file_name = "2"): bool|string
 {
-    global $db;
+    global $conn;
 
     print $status;
     $sql = match ($status) {
@@ -142,7 +99,7 @@ function update_music(int $status, int $id, string $name, string $singer, int $c
                    `detail`=:detail WHERE `id`=:id ",
     };
 
-    $stmt = $db->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->bindValue("id", $id);
     $stmt->bindValue("music_name", $name);
     $stmt->bindValue("singer", $singer);
@@ -158,7 +115,7 @@ function update_music(int $status, int $id, string $name, string $singer, int $c
     }
     if ($stmt->execute()) {
         return true;
-    }else{
+    } else {
         return "خطا در اپدیت موزیک";
     }
 }

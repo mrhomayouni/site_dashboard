@@ -1,15 +1,16 @@
 <?php
 require "header.php";
-
 if (isset($_POST["delete"])) {
     $id = $_POST["delete"];
     delete_category($id);
 }
+
 if (isset($_POST["send"])) {
     $id = $_POST["id"];
     $new_title = $_POST["new_title"];
     edit_category($id, $new_title);
 }
+
 if (isset($_POST["add"])) {
     $title = $_POST["title"];
     if ($title !== "") {
@@ -18,6 +19,7 @@ if (isset($_POST["add"])) {
         $ok = "عنوان دسته بندی را اضافه کنید.";
     }
 }
+
 $categories = get_categories();
 ?>
 <!DOCTYPE html>

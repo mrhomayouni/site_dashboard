@@ -37,7 +37,7 @@ $musics = get_all_music();
                     <?php foreach ($musics as $music) { ?>
                         <div class="col">
                             <div class="card shadow-sm">
-                                <img class="bd-placeholder-img card-img-top" width="100%" height="100%"
+                                <img class="bd-placeholder-img card-img-top" width="150" height="190"
                                      src="files/<?= $music["banner_file_name"] ?>">
                                 <div class="card-body">
                                     <p class="card-text"
@@ -59,7 +59,7 @@ $musics = get_all_music();
                                                class="delete btn btn-sm btn-outline-secondary"
                                                style="border-top-right-radius: 5px;border-bottom-right-radius: 5px;">
                                                 <i class="bi bi-trash"></i></a>
-                                            <a href="edit.php?id=<?= $music["id"] ?>"
+                                            <a href="#"
                                                class="add btn btn-sm btn-outline-secondary"
                                                style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                 <i class="bi bi-pencil"></i></a>

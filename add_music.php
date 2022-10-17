@@ -19,7 +19,7 @@ if (isset($_POST["name"], $_POST["singer"], $_POST["category"], $_POST["detail"]
 
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $banner_path) &&
             move_uploaded_file($_FILES["music"]["tmp_name"], $music_path)) {
-            $ok = add_to_music($name, $singer, $category, $detail, $music_name, $banner_name, );
+            $ok = add_to_music($name, $singer, $category, $detail, $banner_name, $music_name);
         } else {
             $ok = "خطایی در اپلود فایل وجود دارد. ";
         }

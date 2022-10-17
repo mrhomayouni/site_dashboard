@@ -19,7 +19,7 @@ require "load.php";
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 
 </head>
-
+<body dir="rtl">
 <section class="py-5 text-center container">
     <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
@@ -27,11 +27,14 @@ require "load.php";
             <p class="lead text-muted">وصف قصير حول الألبوم أدناه (محتوياته ، ومنشؤه ، وما إلى ذلك). اجعله قصير ولطيف،
                 ولكن ليست قصير جدًا حتى لا يتخطى الناس هذا الألبوم تمامًا.</p>
             <p>
-                <a href="category.php" class="btn btn-primary my-2">دسته بندی ها</a>
+                <a href="category.php"
+                   class="btn <?php if (check_page("/site_dashboard/music_category.php")) { ?> btn-warning <?php } ?> btn-primary my-2">دسته
+                    بندی ها</a>
                 <a href="index.php" class="btn btn-primary my-2">اهنگ ها</a>
                 <a href="add_music.php" class="btn btn-primary my-2">اضافه کردن اهنگ </a>
             </p>
         </div>
     </div>
 </section>
+</body>
 </html>

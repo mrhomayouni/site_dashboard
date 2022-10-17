@@ -29,15 +29,15 @@ $musics = get_music_by_category_id($id);
                 <?php foreach ($musics as $music) { ?>
                     <div class="col">
                         <div class="card shadow-sm">
-                            <img class="bd-placeholder-img card-img-top" width="100%" height="100%"
-                                 src="files/<?= $music["music_file_name"] ?>">
+                            <img class="bd-placeholder-img card-img-top" width="200" height="250"
+                                 src="files/<?= $music["banner_file_name"] ?>">
                             <div class="card-body">
                                 <p class="card-text" style="text-align: center"><?= $music["music_name"] ?></p>
                                 <p class="card-text" style="text-align: center"><?= $music["singer"] ?></p>
                                 <audio controls
                                        style="display: table;margin-left: auto; margin-right: auto; width: 90%"
                                        class="mb-4">
-                                    <source src="files/<?= $music["banner_file_name"] ?>" type="audio/mpeg">
+                                    <source src="files/<?= $music["music_file_name"] ?>" type="audio/mpeg">
                                     Your browser does not support the audio element.
                                 </audio>
 
