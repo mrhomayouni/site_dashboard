@@ -59,8 +59,7 @@ $musics = get_all_music();
                                                class="delete btn btn-sm btn-outline-secondary"
                                                style="border-top-right-radius: 5px;border-bottom-right-radius: 5px;">
                                                 <i class="bi bi-trash"></i></a>
-                                            <a href="#"
-                                               class="add btn btn-sm btn-outline-secondary"
+                                            <a href="edit.php?id=<?= $music["id"] ?>"                                               class="add btn btn-sm btn-outline-secondary"
                                                style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                 <i class="bi bi-pencil"></i></a>
                                         </div>

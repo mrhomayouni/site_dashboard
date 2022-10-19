@@ -8,46 +8,43 @@ if (isset($_GET["id"])) {
 }
 
 $music = get_music_by_id($id);
+
 if (isset($_POST["name"], $_POST["singer"], $_POST["category"], $_POST["detail"])) {
     $name = $_POST["name"];
     $singer = $_POST["singer"];
     $category = $_POST["category"];
     $detail = $_POST["detail"];
 
-    if ($name === "" || $singer === "" || $category === "" || $detail === "") {
-        $ok = "فیلد خالی مجاز نیست";
-    } elseif ($_FILES["image"]["size"] > 0 && $_FILES["music"]["size"] > 0) {
-        $banner_name = rand(1000, 9999) . $_FILES["image"]["name"];
-        $music_name = rand(1000, 9999) . $_FILES["music"]["name"];
-        $banner_path = "files/" . $banner_name;
-        $music_path = "files/" . $music_name;
-        if (move_uploaded_file($_FILES["image"]["tmp_name"], $banner_path) &&
-            move_uploaded_file($_FILES["music"]["tmp_name"], $music_path)) {
-            unlink("files/" . $music["banner_file_name"]);
-            unlink("files/" . $music["music_file_name"]);
-            $ok = update_music(0, $id, $name, $singer, $category, $detail, $banner_name, $music_name);
-        } else {
-            $ok = "خطا در اپلود فایل ها";
-        }
-    } else if ($_FILES["image"]["error"] !== 4) {
-        unlink("files/" . $music["banner_file_name"]);
-        $banner_name = rand(1000, 9999) . $_FILES["image"]["name"];
-        $banner_path = "files/" . $banner_name;
-        if (move_uploaded_file($_FILES["image"]["tmp_name"], $banner_path)) {
-            $ok = update_music(1, $id, $name, $singer, $category, $detail, $banner_name);
-        } else {
-            $ok = "خطا در اپلود عکس";
-        }
-    } elseif ($_FILES["music"]["size"] > 0) {
-        $music_name = rand(1000, 9999) . $_FILES["music"]["name"];
-        $music_path = "files/" . $music_name;
-        if (move_uploaded_file($_FILES["image"]["tmp_name"], $music_path)) {
-            unlink("files/" . $music["music_file_name"]);
-        } else {
-            $ok = "خطا در اپلود موزیک";
-        }
+    if ($name !== "" || $singer !== "" || $category !== "" || $detail !== "") {
+        $ok = update_music($id, $name, $singer, $category, $detail);
     } else {
-        $ok = update_music(1, $id, $name, $singer, $category, $detail);
+        $ok = "فیلد خالی مجاز نیست";
+    }
+
+    if (isset($_FILES["music"], $_FILES["music"])) {
+        if ($_FILES["image"]["name"] !== "") {
+            $banner_name = rand(1000, 9999) . $_FILES["image"]["name"];
+            $banner_path = "files/" . $banner_name;
+
+            if (move_uploaded_file($_FILES["image"]["tmp_name"], $banner_path)) {
+                unlink("files/" . $music["banner_file_name"]);
+                $ok = upload_music_banner($id, $banner_name);
+            } else {
+                $ok = "خطا در اپلود عکس";
+            }
+        }
+
+        if ($_FILES["music"]["name"] !== "") {
+            $music_name = rand(1000, 9999) . $_FILES["music"]["name"];
+            $music_path = "files/" . $music_name;
+
+            if (move_uploaded_file($_FILES["music"]["tmp_name"], $music_path)) {
+                unlink("files/" . $music["music_file_name"]);
+                $ok = upload_music_file($id, $music_name);
+            } else {
+                $ok = "خطا در اپلود فایل";
+            }
+        }
     }
 }
 $music = get_music_by_id($id);
@@ -114,7 +111,7 @@ $categories = get_categories();
         <div class="col-sm-9">
             <?php if (isset($ok) && $ok === true) { ?>
                 <div class="alert alert-success" role="alert">
-                    اهنگ با موفقیت تغییر کرد
+                    تغییرات با موفقیت ثبت شد
                 </div>
             <?php } elseif (isset($ok) && $ok !== true) { ?>
                 <div class="alert alert-warning" role="alert">

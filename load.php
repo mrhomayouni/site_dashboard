@@ -80,42 +80,33 @@ function check_page(string $path): bool
     return basename($_SERVER["SCRIPT_NAME"] == $path);
 }
 
-function update_music(int $status, int $id, string $name, string $singer, int $category_id, string $detail, string $banner_file_name = "1", string $music_file_name = "2"): bool|string
+function update_music(int $id, string $name, string $singer, int $category_id, string $detail): bool|string
 {
-    global $conn;
-
-    print $status;
-    $sql = match ($status) {
-        0 => "UPDATE `music` SET `music_name`=:music_name,`singer`=:singer,`category_id`=:category_id,
-                   `detail`=:detail,`music_file_name`=:music_file_name,`banner_file_name`=:banner_file_name WHERE `id`=:id ",
-
-        1 => "UPDATE `music` SET `music_name`=:music_name,`singer`=:singer,`category_id`=:category_id,
-                   `detail`=:detail,`banner_file_name`=:banner_file_name WHERE `id`=:id ",
-
-        2 => "UPDATE `music` SET `music_name`=:music_name,`singer`=:singer,`category_id`=:category_id,
-                   `detail`=:detail,`music_file_name`=:music_file_name, WHERE `id`=:id ",
-
-        3 => "UPDATE `music` SET `music_name`=:music_name,`singer`=:singer,`category_id`=:category_id,
-                   `detail`=:detail WHERE `id`=:id ",
-    };
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue("id", $id);
-    $stmt->bindValue("music_name", $name);
-    $stmt->bindValue("singer", $singer);
-    $stmt->bindValue("category_id", $category_id);
-    $stmt->bindValue("detail", $detail);
-    if ($status === 0) {
-        $stmt->bindValue("music_file_name", $music_file_name);
-        $stmt->bindValue("banner_file_name", $banner_file_name);
-    } elseif ($status === 1) {
-        $stmt->bindValue("banner_file_name", $banner_file_name);
-    } elseif ($status === 2) {
-        $stmt->bindValue("music_file_name", $music_file_name);
-    }
-    if ($stmt->execute()) {
+    if (update("music", [
+        "music_name" => $name,
+        "singer" => $singer,
+        "category_id" => $category_id,
+        "detail" => $detail
+    ], ["id" => $id])) {
         return true;
     } else {
         return "خطا در اپدیت موزیک";
+    }
+}
+
+function upload_music_banner($id,$banner_name): bool|string
+{
+    if(update("music",["banner_file_name"=>$banner_name],["id"=>$id])){
+        return true;
+    }else{
+        return "خطا در اپدیت بنر موزیک";
+    }
+}
+function upload_music_file($id,$music_file_name): bool|string
+{
+    if(update("music",["music_file_name"=>$music_file_name],["id"=>$id])){
+        return true;
+    }else{
+        return "خطا در اپدیت فایل موزیک";
     }
 }

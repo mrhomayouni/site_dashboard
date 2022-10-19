@@ -95,3 +95,40 @@ function delete(string $table_name, array $wheres = array(), $type_where = "AND"
     }
     $stmt->execute();
 }
+
+function update(string $table_name, array $cols, array $wheres, string $type_where = "AND")
+{
+    global $conn;
+
+    $sql = "UPDATE `" . $table_name . "` SET";
+
+    foreach ($cols as $key => $item) {
+        $sql .= " `" . $key . "`=:$key ,";
+    }
+    $sql = rtrim($sql, ",");
+
+    if (!empty($wheres)) {
+        $flag = match ($type_where) {
+            "OR" => "OR",
+            default => "AND",
+        };
+        $segment_where = "";
+        foreach ($wheres as $key => $item) {
+            $segment_where .= "`" . $key . "` = :old" . $key . " " . $flag . " ";
+        }
+        $segment_where = rtrim($segment_where, " $flag ");
+        $sql .= " WHERE " . $segment_where;
+    }
+
+    $stmt = $conn->prepare($sql);
+
+    foreach ($cols as $key => $item) {
+        $stmt->bindValue(":$key", $item);
+    }
+
+    foreach ($wheres as $key => $item) {
+        //???????????????
+        $stmt->bindValue(":old" . "$key", $item);
+    }
+    return $stmt->execute();
+}
