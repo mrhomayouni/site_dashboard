@@ -94,19 +94,53 @@ function update_music(int $id, string $name, string $singer, int $category_id, s
     }
 }
 
-function upload_music_banner($id,$banner_name): bool|string
+function upload_music_banner($id, $banner_name): bool|string
 {
-    if(update("music",["banner_file_name"=>$banner_name],["id"=>$id])){
+    if (update("music", ["banner_file_name" => $banner_name], ["id" => $id])) {
         return true;
-    }else{
+    } else {
         return "خطا در اپدیت بنر موزیک";
     }
 }
-function upload_music_file($id,$music_file_name): bool|string
+
+function upload_music_file($id, $music_file_name): bool|string
 {
-    if(update("music",["music_file_name"=>$music_file_name],["id"=>$id])){
+    if (update("music", ["music_file_name" => $music_file_name], ["id" => $id])) {
         return true;
-    }else{
+    } else {
         return "خطا در اپدیت فایل موزیک";
     }
+}
+
+function update2(int $id, string $music_name, string $singer, string $category_id, string $detail, ?string $banner_file_name, ?string $music_file_name)
+{
+    global $conn;
+
+    $sql = "UPDATE `music` SET `music_name`=:music_name,`singer`=:singer,`category_id`=:category_id,`detail`=:detail";
+    if ($banner_file_name !== null) {
+        $sql .= ",`banner_file_name`=:banner_file_name";
+    }
+    if ($music_file_name !== null) {
+        $sql .= ",`music_file_name`=:music_file_name";
+    }
+    $sql .= " WHERE `id`=:id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(":music_name", $music_name);
+    $stmt->bindValue(":singer", $singer);
+    $stmt->bindValue(":category_id", $category_id);
+    $stmt->bindValue(":detail", $detail);
+    if ($banner_file_name !== null) {
+        $stmt->bindValue(":banner_file_name", $banner_file_name);
+    }
+    if ($music_file_name !== null) {
+        $stmt->bindValue(":music_file_name", $music_file_name);
+    }
+    $stmt->bindValue(":id", $id);
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        return "حطا در آپدیت موزیک";
+    }
+
 }
